@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Password;
+use App\Models\Form;
 
 class FormController extends Controller
 {
@@ -31,25 +33,39 @@ class FormController extends Controller
 
         $request->image->storeAs('public/images', $request->image->getClientOriginalName());
 
-        $results = [
-            'Email' => $request->email,
-            'Password' => $request->password,
-            'Name' => $request->name,
-            'Bounty' => $request->float,
-            'Image' => $request->image->getClientOriginalName()
-        ];
+        $results = new Form();
+        $results->email = $request->email;
+        $results->password = $request->password;
+        $results->name = $request->name;
+        $results->bounty = $request->float;
+        $results->image = $request->image->getClientOriginalName();
+        $results->save();
+
+        $id = $results->id;
 
         $name = $request->name;
 
-        return redirect('/result')->with(['results' => $results, 'status' => "You are part of the Crew!", 'name' => $name]);
+        return redirect()->route('result.show', ['id' => $id])
+        ->with(['status' => "You are part of the Crew!", 'name' => $name]);
     }
 
-    public function result()
+    public function showResult($id)
     {
-        $results = session()->get('results');
+        $results = DB::table("Form")->select('id', 'email', 'password', 'name', 'bounty', 'image');
 
+        $result = $results->find($id);
+        $name = $result->name;
+
+        if (!$result) {
+            abort(404); 
+        }
+    
         return view('result', [
-            'results' => $results
+            'id' => $id,
+            'results' => $result,
+            'status' => "You are part of the Crew!",
+            'name' => $name
         ]);
     }
+    
 }

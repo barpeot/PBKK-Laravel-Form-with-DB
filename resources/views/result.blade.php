@@ -9,17 +9,15 @@
 </head>
 <body class="bg-dark-subtle">
     <div class="position-absolute top-50 start-50 translate-middle bg-body-secondary rounded">
-        @if (session('status'))
-            <h1 class="text-center mt-2 px-3">{{ session('name') }}, {{ session('status') }}</h1>
-        @endif
+            <h1 class="text-center mt-2 px-3">{{ $name }}, {{ $status }}</h1>
         @foreach($results as $key => $result)
-        @if ($loop->last)
+        @if ($key === 'image')
         <img class="mt-2 px-3 rounded" src="{{ asset('storage/images/'.$result) }}" style="height: 350px; width: auto;">
         <br>
         @endif
         <p class="mt-2 px-3">
             {{ $key }} = {{ $result }}
-            @if($key === 'Bounty')
+            @if($key === 'bounty')
             Million Dollars
             @endif
             <br>

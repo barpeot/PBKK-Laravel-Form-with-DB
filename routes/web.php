@@ -27,7 +27,7 @@ Route::get('/form', [FormController::class, 'index']);
 
 Route::post('/form', [FormController::class, 'show']);
 
-Route::get('/result', [FormController::class, 'result']);
+Route::get('/result/{id}', [FormController::class, 'showResult'])->name('result.show');
 
 Route::post('/result', [FormController::class, 'reset']);
 =======
